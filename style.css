@@ -1,0 +1,29 @@
+:root {
+    --transition-speed: 0.3s;
+}
+
+/* Адаптивность и чистый дизайн */
+.product-card {
+    transition: transform var(--transition-speed);
+}
+
+.product-card:hover {
+    transform: translateY(-10px);
+}
+
+/* Скрытие скроллбара категорий */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Темная тема для режима "Ночь" */
+[data-bs-theme="dark"] .bg-light {
+    background-color: #2b3035 !important;
+}
+
+[data-bs-theme="dark"] .text-dark {
+    color: #f8f9fa !important;
+}
+
+[data-bs-theme="dark"] footer {
+    background-color: #000 !important;
+}
