@@ -17,19 +17,36 @@
         .product-card:hover { transform: translateY(-5px); box-shadow: 0 12px 24px rgba(0,0,0,0.15); }
         .card-img-top { height: 180px; object-fit: cover; }
         .navbar { backdrop-filter: blur(10px); background: rgba(var(--bs-tertiary-bg-rgb), 0.8) !important; }
-        .social-link { color: white; transition: 0.3s; text-decoration: none; font-size: 1.8rem; }
-        .social-link:hover { color: var(--main-green); transform: scale(1.2); }
+        
+        /* Стили для соцсетей */
+        .social-link { 
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 50px; height: 50px; border-radius: 50%; background: rgba(255,255,255,0.1);
+            color: white; transition: 0.3s; text-decoration: none; font-size: 1.5rem; 
+        }
+        .social-link:hover { background: var(--main-green); color: white; transform: translateY(-3px); }
+        
         .user-card { border-radius: 15px; padding: 15px; border: 1px solid rgba(0,0,0,0.1); background: var(--bs-tertiary-bg); }
         .promo-block { border: 2px dashed #4CAF50; background: rgba(76, 175, 80, 0.05) !important; }
         .cart-badge { font-size: 0.7rem; }
         .kbju-badge { font-size: 0.65rem; background: rgba(0,0,0,0.05); color: #666; border-radius: 5px; padding: 2px 6px; margin-bottom: 8px; display: inline-block; }
+        
+        /* Стили для Upsell */
+        .upsell-title { font-size: 0.9rem; font-weight: 700; margin-bottom: 10px; color: var(--main-green); }
+        .upsell-item { 
+            border: 1px solid rgba(0,0,0,0.05); border-radius: 15px; padding: 8px; 
+            text-align: center; cursor: pointer; transition: 0.2s; background: var(--bs-body-bg);
+        }
+        .upsell-item:hover { border-color: var(--main-green); transform: scale(1.03); }
+        .upsell-img { width: 40px; height: 40px; object-fit: contain; margin-bottom: 5px; }
+        .upsell-name { font-size: 0.7rem; display: block; line-height: 1; }
+        .upsell-price { font-size: 0.75rem; font-weight: bold; }
+
         .step-wizard { display: flex; justify-content: space-between; position: relative; margin-bottom: 2rem; }
         .step-wizard::before { content: ""; position: absolute; top: 15px; left: 0; width: 100%; height: 3px; background: #eee; z-index: 1; }
         .step-item { position: relative; z-index: 2; text-align: center; width: 25%; }
         .step-icon { width: 35px; height: 35px; border-radius: 50%; background: #eee; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; }
         .step-item.active .step-icon { background: var(--main-green); color: white; }
-        .upsell-item { border: 1px solid #eee; border-radius: 12px; padding: 10px; cursor: pointer; text-align: center; flex: 1; transition: 0.2s; }
-        .upsell-item:hover { border-color: var(--main-green); background: rgba(76, 175, 80, 0.05); }
     </style>
 </head>
 <body>
@@ -38,6 +55,9 @@
         <div class="container">
             <a class="navbar-brand fw-bold text-success fs-2" href="#">FoodFAST</a>
             <div class="d-flex align-items-center order-lg-3">
+                <button class="btn btn-link nav-link me-2" data-bs-toggle="modal" data-bs-target="#authModal" id="userBtn">
+                    <i class="bi bi-person-circle fs-3 text-success"></i>
+                </button>
                 <button class="btn btn-link nav-link me-3" id="themeToggler">
                     <i class="bi bi-sun-fill fs-4 text-warning" id="themeIcon"></i>
                 </button>
@@ -92,13 +112,15 @@
 
     <footer class="bg-dark text-white py-5 mt-5">
         <div class="container text-center">
-            <h2 class="fw-bold text-success mb-4">FoodFAST</h2>
-            <div class="mb-4">
-                <a href="https://instagram.com" target="_blank" class="social-link mx-3"><i class="bi bi-instagram"></i></a>
-                <a href="https://wa.me/77000000000" target="_blank" class="social-link mx-3"><i class="bi bi-whatsapp"></i></a>
-                <a href="https://t.me/foodfast" target="_blank" class="social-link mx-3"><i class="bi bi-telegram"></i></a>
+            <h2 class="fw-bold text-success mb-2">FoodFAST</h2>
+            <p class="text-secondary mb-4">Присоединяйтесь к нам в соцсетях</p>
+            <div class="d-flex justify-content-center gap-3 mb-4">
+                <a href="#" class="social-link"><i class="bi bi-instagram"></i></a>
+                <a href="#" class="social-link"><i class="bi bi-telegram"></i></a>
+                <a href="#" class="social-link"><i class="bi bi-tiktok"></i></a>
+                <a href="#" class="social-link"><i class="bi bi-whatsapp"></i></a>
             </div>
-            <p class="text-secondary small">Алматы, пр. Абая 110. Работаем 24/7</p>
+            <p class="text-secondary small">© 2026 FoodFast Almaty. Все права защищены.<br>Алматы, пр. Абая 110. Работаем 24/7</p>
         </div>
     </footer>
 
@@ -111,6 +133,34 @@
                 </div>
                 <div class="modal-body">
                     <div id="cartItemsList" class="mb-4"></div>
+
+                    <div id="upsellBlock" class="mb-4 d-none">
+                        <p class="upsell-title"><i class="bi bi-stars"></i> Рекомендуем добавить:</p>
+                        <div class="row g-2">
+                            <div class="col-4">
+                                <div class="upsell-item" onclick="addToCart('Сырный соус', 300)">
+                                    <img src="https://cdn-icons-png.flaticon.com/512/5030/5030143.png" class="upsell-img">
+                                    <span class="upsell-name">Сырный соус</span>
+                                    <span class="upsell-price">300 ₸</span>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="upsell-item" onclick="addToCart('Кола 0.5', 600)">
+                                    <img src="https://cdn-icons-png.flaticon.com/512/2405/2405479.png" class="upsell-img">
+                                    <span class="upsell-name">Кола 0.5л</span>
+                                    <span class="upsell-price">600 ₸</span>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="upsell-item" onclick="addToCart('Картофель фри', 800)">
+                                    <img src="https://cdn-icons-png.flaticon.com/512/1037/1037855.png" class="upsell-img">
+                                    <span class="upsell-name">Фри</span>
+                                    <span class="upsell-price">800 ₸</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="promo-block p-3 rounded-3 mb-3">
                         <label class="small fw-bold mb-1">Есть промокод?</label>
                         <div class="input-group">
@@ -131,18 +181,59 @@
         </div>
     </div>
 
+    <div class="modal fade" id="authModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 400px;">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 25px;">
+                <div class="modal-body p-4">
+                    <ul class="nav nav-pills nav-fill mb-4 bg-light rounded-pill p-1" id="authTab" role="tablist">
+                        <li class="nav-item">
+                            <button class="nav-link active rounded-pill fw-bold" id="login-tab" data-bs-toggle="pill" data-bs-target="#login-form">Вход</button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link rounded-pill fw-bold" id="reg-tab" data-bs-toggle="pill" data-bs-target="#reg-form">Регистрация</button>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="login-form">
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold">Email</label>
+                                <input type="text" class="form-control rounded-pill py-2" placeholder="example@mail.com">
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label small fw-bold">Пароль</label>
+                                <input type="password" class="form-control rounded-pill py-2" placeholder="******">
+                            </div>
+                            <button class="btn btn-success w-100 py-2 rounded-pill fw-bold" onclick="handleAuth('login')">ВОЙТИ</button>
+                        </div>
+                        <div class="tab-pane fade" id="reg-form">
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold">Имя</label>
+                                <input type="text" class="form-control rounded-pill py-2" placeholder="Алихан">
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label small fw-bold">Пароль</label>
+                                <input type="password" class="form-control rounded-pill py-2" placeholder="******">
+                            </div>
+                            <button class="btn btn-success w-100 py-2 rounded-pill fw-bold" onclick="handleAuth('reg')">РЕГИСТРАЦИЯ</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal fade" id="paymentModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-0 shadow-lg" style="border-radius: 25px;">
-                <div class="modal-header border-0">
-                    <h5 class="fw-bold">Данные карты</h5>
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="fw-bold">Оплата картой</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body text-center">
-                    <input type="text" class="form-control mb-3 py-3" placeholder="0000 0000 0000 0000">
-                    <div class="row">
-                        <div class="col-6"><input type="text" class="form-control py-3" placeholder="ММ/ГГ"></div>
-                        <div class="col-6"><input type="password" class="form-control py-3" placeholder="CVV"></div>
+                    <input type="text" class="form-control mb-3 py-3 rounded-4" placeholder="0000 0000 0000 0000">
+                    <div class="row g-2">
+                        <div class="col-6"><input type="text" class="form-control py-3 rounded-4" placeholder="ММ/ГГ"></div>
+                        <div class="col-6"><input type="password" class="form-control py-3 rounded-4" placeholder="CVV"></div>
                     </div>
                 </div>
                 <div class="modal-footer border-0">
@@ -156,14 +247,14 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-0 shadow-lg" style="border-radius: 25px;">
                 <div class="modal-body text-center py-5">
-                    <h4 class="fw-bold mb-4">Заказ в пути!</h4>
+                    <h4 class="fw-bold mb-4">Готовим ваш заказ!</h4>
                     <div class="step-wizard">
                         <div class="step-item active" id="s1"><div class="step-icon"><i class="bi bi-check"></i></div><div class="small">Принят</div></div>
                         <div class="step-item" id="s2"><div class="step-icon"><i class="bi bi-fire"></i></div><div class="small">Готовим</div></div>
                         <div class="step-item" id="s3"><div class="step-icon"><i class="bi bi-bicycle"></i></div><div class="small">В пути</div></div>
                         <div class="step-item" id="s4"><div class="step-icon"><i class="bi bi-house-heart"></i></div><div class="small">У двери</div></div>
                     </div>
-                    <button class="btn btn-outline-success rounded-pill px-4" data-bs-dismiss="modal">Закрыть</button>
+                    <button class="btn btn-outline-success rounded-pill px-4" data-bs-dismiss="modal">Супер!</button>
                 </div>
             </div>
         </div>
@@ -181,6 +272,8 @@
             { name: "BBQ Цыпленок", price: 3400, kbju: "320ккал | Б:19 Ж:12 У:27", img: "https://images.unsplash.com/photo-1565299507177-b0ac66763828?w=500" },
             { name: "Мексиканская", price: 3300, kbju: "305ккал | Б:16 Ж:13 У:29", img: "https://images.unsplash.com/photo-1593560708920-61dd98c46a4e?w=500" },
             { name: "Вегетарианская", price: 2700, kbju: "210ккал | Б:9 Ж:7 У:28", img: "https://images.unsplash.com/photo-1541745537411-b8046dc6d66c?w=500" },
+        { name: "Пять сыра", price: 3500, kbju: "340ккал | Б:14 Ж:18 У:22", img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=500" },
+        { name: "Сырронни", price: 3500, kbju: "340ккал | Б:14 Ж:18 У:22", img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=500" },
             { name: "Морская", price: 4200, kbju: "290ккал | Б:24 Ж:11 У:23", img: "https://images.unsplash.com/photo-1571407970349-bc81e7e96d47?w=500" }
         ];
 
@@ -193,11 +286,12 @@
             { name: "BBQ Бургер", price: 2100, kbju: "490ккал | Б:24 Ж:21 У:35", img: "https://images.unsplash.com/photo-1553979459-d2229ba7433b?w=500" },
             { name: "Фиш Бургер", price: 1700, kbju: "380ккал | Б:18 Ж:14 У:33", img: "https://images.unsplash.com/photo-1460306855393-0410f61241c7?w=500" },
             { name: "Мини-сет", price: 3500, kbju: "820ккал | Б:35 Ж:40 У:65", img: "https://images.unsplash.com/photo-1550547660-d9450f859349?w=500" },
+            { name: "Айс Бургер", price: 2400, kbju: "680ккал | Б:40 Ж:35 У:38", img: "https://images.unsplash.com/photo-1586816001966-79b736744398?w=500" },
+            { name: "Бургеррони", price: 2400, kbju: "680ккал | Б:40 Ж:35 У:38", img: "https://images.unsplash.com/photo-1586816001966-79b736744398?w=500" },
             { name: "VIP Бургер", price: 4000, kbju: "750ккал | Б:42 Ж:38 У:40", img: "https://images.unsplash.com/photo-1596662951482-0c4ba74a6df6?w=500" },
             { name: "Веган Бургер", price: 1900, kbju: "310ккал | Б:15 Ж:10 У:40", img: "https://images.unsplash.com/photo-1512152272829-e3139592d56f?w=500" }
         ];
 
-        // НОВЫЕ: Напитки (10 позиций)
         const drinkItems = [
             { name: "Coca-Cola 0.5", price: 600, kbju: "210ккал | Б:0 Ж:0 У:53", img: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=500" },
             { name: "Fanta 0.5", price: 600, kbju: "240ккал | Б:0 Ж:0 У:60", img: "https://images.unsplash.com/photo-1624517452488-04869289c4ca?w=500" },
@@ -205,11 +299,10 @@
             { name: "Сок Апельсин", price: 800, kbju: "120ккал | Б:1 Ж:0 У:28", img: "https://images.unsplash.com/photo-1613478223719-2ab802602423?w=500" },
             { name: "Сок Яблоко", price: 800, kbju: "115ккал | Б:1 Ж:0 У:27", img: "https://images.unsplash.com/photo-1568909344668-6f14a07b56a0?w=500" },
             { name: "Ice Tea Лимон", price: 700, kbju: "90ккал | Б:0 Ж:0 У:22", img: "https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=500" },
-            { name: "Морс Домашний", price: 900, kbju: "150ккал | Б:0 Ж:0 У:35", img: "https://images.unsplash.com/photo-1630132170308-46603a744729?w=500" },
+            
             { name: "Лимонад", price: 1200, kbju: "180ккал | Натур. сироп", img: "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=500" },
             { name: "Кофе Американо", price: 950, kbju: "5ккал | Без сахара", img: "https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=500" }
         ];
-
         let cart = [];
         let discountMultiplier = 1;
 
@@ -233,7 +326,6 @@
             });
         }
 
-        // Рендерим всё меню
         renderCategory(pizzaItems, 'pizza-container');
         renderCategory(burgerItems, 'burgers-container');
         renderCategory(drinkItems, 'drinks-container');
@@ -241,6 +333,11 @@
         function addToCart(name, price) {
             cart.push({name, price});
             updateCartUI();
+            
+            // Показываем блок допродаж, если в корзине что-то есть
+            if(cart.length > 0) {
+                document.getElementById('upsellBlock').classList.remove('d-none');
+            }
         }
 
         function applyPromo() {
@@ -258,6 +355,8 @@
             let subTotal = cart.reduce((sum, item) => sum + item.price, 0);
             list.innerHTML = cart.map(item => `<div class="d-flex justify-content-between small mb-1"><span>${item.name}</span><b>${item.price} ₸</b></div>`).join('');
             document.getElementById('cartTotal').innerText = Math.round(subTotal * discountMultiplier) + ' ₸';
+            
+            if(cart.length === 0) document.getElementById('upsellBlock').classList.add('d-none');
         }
 
         function goToPayment() {
@@ -274,10 +373,11 @@
             cart = []; updateCartUI();
         }
 
-        const users = [{ name: 'Алихан', orders: 15 }, { name: 'Мадина', orders: 24 }, { name: 'Сергей', orders: 12 }];
-        users.forEach(u => {
-            document.getElementById('users-list').innerHTML += `<div class="col-md-4"><div class="user-card text-center"><i class="bi bi-person-circle fs-3 text-success"></i><h6 class="fw-bold mt-2 mb-0">${u.name}</h6><small>Заказов: ${u.orders}</small></div></div>`;
-        });
+        function handleAuth(type) {
+            const btn = document.getElementById('userBtn');
+            bootstrap.Modal.getInstance(document.getElementById('authModal')).hide();
+            btn.innerHTML = `<span class="badge bg-success rounded-pill px-3 py-2 fw-bold">Привет!</span>`;
+        }
 
         document.getElementById('themeToggler').onclick = () => {
             const html = document.documentElement;
@@ -285,6 +385,11 @@
             html.setAttribute('data-bs-theme', isLight ? 'dark' : 'light');
             document.getElementById('themeIcon').className = isLight ? 'bi bi-moon-fill fs-4 text-primary' : 'bi bi-sun-fill fs-4 text-warning';
         };
+
+        const users = [{ name: 'Алихан', orders: 15 }, { name: 'Мадина', orders: 24 }, { name: 'Сергей', orders: 12 },{ name: 'Валерий', orders: 100 }];
+        users.forEach(u =>  {
+            document.getElementById('users-list').innerHTML += `<div class="col-6 col-md-3"><div class="user-card text-center"><i class="bi bi-person-circle fs-3 text-success"></i><h6 class="fw-bold mt-2 mb-0 small">${u.name}</h6><small>Заказов: ${u.orders}</small></div></div>`;
+        });
     </script>
 </body>
 </html>
