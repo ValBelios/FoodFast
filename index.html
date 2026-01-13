@@ -410,7 +410,7 @@
             document.getElementById('themeIcon').className = isLight ? 'bi bi-moon-fill fs-4 text-primary' : 'bi bi-sun-fill fs-4 text-warning';
         };
 
-        const users = [{ name: 'Алихан', orders: 15 }, { name: 'Мадина', orders: 24 }, { name: 'Сергей', orders: 12 },{ name: 'Валерий', orders: 100 }];
+        const users = [{ name: 'Валерий', orders: 100 }, { name: 'Светлана', orders: 100 }, { name: 'Егор', orders: 100 },{ name: 'Ульяна', orders: 100 }];
         users.forEach(u => {
             document.getElementById('users-list').innerHTML += `<div class="col-6 col-md-3"><div class="user-card text-center"><i class="bi bi-person-circle fs-3 text-success"></i><h6 class="fw-bold mt-2 mb-0 small">${u.name}</h6><small>Заказов: ${u.orders}</small></div></div>`;
         });
